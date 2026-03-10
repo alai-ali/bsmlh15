@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>BSMLH</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script>
+firebase.initializeApp({
+  apiKey:"AIzaSyBlD8lNdYdubHXr13IhPkmkCnNQQLChtVA",
+  authDomain:"bsmlh-chat.firebaseapp.com",
+  databaseURL:"https://bsmlh-chat-default-rtdb.firebaseio.com",
+  projectId:"bsmlh-chat",
+  storageBucket:"bsmlh-chat.firebasestorage.app",
+  messagingSenderId:"41774666354",
+  appId:"1:41774666354:web:e200d57a0bab89e26be8eb"
+});
+</script>
+<style>
+:root{
+  --green:#21A038;
+  --green-light:#E8F5EC;
+  --green-dark:#178030;
+  --white:#FFFFFF;
+  --bg:#F5F7F5;
+  --text:#1A1A1A;
+  --text2:#6B7280;
+  --border:#E2E8E2;
+  --card:#FFFFFF;
+  --shadow:0 2px 12px rgba(33,160,56,0.10);
+  --shadow2:0 4px 24px rgba(0,0,0,0.08);
+  --r:16px;
+  --font:'Golos Text',sans-serif;
+  --safe-top:env(safe-area-inset-top,0px);
+  --safe-bot:env(safe-area-inset-bottom,0px);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-font-smoothing:antialiased;}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:var(--font);}
+
+/* ── SPLASH ── */
+#splash{
+  position:fixed;inset:0;z-index:9999;
+  background:var(--white);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;
+}
+#splash.gone{display:none!important;}
+.sp-logo{
+  width:80px;height:80px;background:var(--green);border-radius:24px;
+  display:flex;align-items:center;justify-content:center;
+}
+.sp-logo svg{width:48px;height:48px;fill:white;}
+.sp-title{font-size:28px;font-weight:900;color:var(--text);letter-spacing:1px;}
+.sp-sub{font-size:13px;color:var(--text2);font-weight:500;}
+.sp-bar{width:160px;height:3px;background:var(--border);border-radius:99px;overflow:hidden;margin-top:8px;}
+.sp-fill{height:100%;width:0%;background:var(--green);border-radius:99px;transition:width 2s ease;}
+
+/* ── ЭКРАНЫ ОНБОРДИНГА ── */
+.scr{
+  position:fixed;inset:0;z-index:8000;
+  background:var(--white);
+  display:none;flex-direction:column;
+  padding:calc(var(--safe-top) + 60px) 24px calc(var(--safe-bot) + 24px);
+  overflow-y:auto;
+}
+.scr.on{display:flex;}
+
+.scr-logo{
+  width:44px;height:44px;background:var(--green);border-radius:12px;
+  display:flex;align-items:center;justify-content:center;margin-bottom:32px;
+}
+.scr-logo svg{width:26px;height:26px;fill:white;}
+.scr-step{font-size:11px;font-weight:600;color:var(--green);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;}
+.scr-h{font-size:28px;font-weight:900;color:var(--text);line-height:1.2;margin-bottom:8px;}
+.scr-p{font-size:14px;color:var(--text2);line-height:1.6;margin-bottom:32px;}
+
+.inp{
+  width:100%;padding:16px;font-size:16px;font-family:var(--font);
+  background:var(--bg);border:1.5px solid var(--border);border-radius:var(--r);
+  color:var(--text);outline:none;transition:border-color .2s;margin-bottom:12px;
+}
+.inp:focus{border-color:var(--green);}
+.inp::placeholder{color:#B0B8B0;}
+
+.btn{
+  width:100%;padding:16px;font-size:15px;font-weight:700;font-family:var(--font);
+  background:var(--green);color:white;border:none;border-radius:var(--r);
+  cursor:pointer;transition:background .15s,transform .1s;margin-bottom:10px;
+  letter-spacing:0.3px;
+}
+.btn:active{background:var(--green-dark);transform:scale(0.98);}
+.btn-ghost{
+  width:100%;padding:14px;font-size:14px;font-weight:600;font-family:var(--font);
+  background:transparent;color:var(--text2);border:1.5px solid var(--border);
+  border-radius:var(--r);cursor:pointer;transition:all .15s;
+}
+.btn-ghost:active{border-color:var(--green);color:var(--green);}
+
+/* Шаги */
+.steps-row{display:flex;gap:6px;margin-bottom:32px;}
+.step-dot{height:4px;flex:1;background:var(--border);border-radius:99px;}
+.step-dot.on{background:var(--green);}
+
+/* ── NFC ЭКРАН ── */
+.nfc-card{
+  background:var(--green-light);border-radius:24px;padding:32px;
+  display:flex;flex-direction:column;align-items:center;gap:12px;
+  margin-bottom:24px;
+}
+.nfc-icon{
+  width:80px;height:80px;background:var(--green);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+}
+.nfc-icon svg{width:40px;height:40px;fill:white;}
+.nfc-label{font-size:13px;font-weight:600;color:var(--green);letter-spacing:1px;}
+.nfc-status{font-size:13px;color:var(--text2);min-height:20px;text-align:center;}
+
+/* ── SMS ЭКРАН ── */
+.phone-prefix{
+  display:flex;align-items:center;gap:10px;
+  background:var(--bg);border:1.5px solid var(--border);border-radius:var(--r);
+  padding:0 16px;margin-bottom:12px;
+}
+.prefix-flag{font-size:20px;}
+.prefix-code{font-size:15px;font-weight:600;color:var(--text);padding:16px 0;}
+.prefix-sep{width:1px;height:24px;background:var(--border);}
+.prefix-inp{flex:1;padding:16px 0 16px 12px;font-size:16px;font-family:var(--font);background:none;border:none;outline:none;color:var(--text);}
+.prefix-inp::placeholder{color:#B0B8B0;}
+
+.code-hint{font-size:12px;color:var(--text2);text-align:center;margin-bottom:16px;line-height:1.5;}
+
+/* ── APP ── */
+#app{display:none;position:fixed;inset:0;flex-direction:column;background:var(--bg);}
+#app.on{display:flex;}
+
+/* Хедер */
+.app-head{
+  background:var(--white);
+  padding:calc(var(--safe-top) + 12px) 20px 12px;
+  display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid var(--border);
+  flex-shrink:0;
+}
+.head-logo{display:flex;align-items:center;gap:10px;}
+.head-logo-icon{width:32px;height:32px;background:var(--green);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.head-logo-icon svg{width:18px;height:18px;fill:white;}
+.head-title{font-size:18px;font-weight:900;color:var(--text);}
+.head-avatar{width:36px;height:36px;border-radius:50%;background:var(--green-light);border:2px solid var(--green);overflow:hidden;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.head-avatar img{width:100%;height:100%;object-fit:cover;}
+.head-avatar-ph{font-size:14px;font-weight:700;color:var(--green);}
+
+/* Контент */
+.app-body{flex:1;overflow-y:auto;padding:16px 16px calc(var(--safe-bot) + 80px);}
+
+/* Навбар */
+.navbar{
+  position:fixed;bottom:0;left:0;right:0;
+  background:var(--white);border-top:1px solid var(--border);
+  display:flex;padding:8px 0 calc(var(--safe-bot) + 8px);
+  z-index:1000;
+}
+.nav-btn{
+  flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;
+  cursor:pointer;padding:4px 0;background:none;border:none;
+}
+.nav-btn svg{width:22px;height:22px;fill:var(--text2);}
+.nav-btn span{font-size:10px;font-weight:600;color:var(--text2);font-family:var(--font);}
+.nav-btn.on svg{fill:var(--green);}
+.nav-btn.on span{color:var(--green);}
+
+/* Карточки */
+.card{background:var(--card);border-radius:var(--r);padding:16px;margin-bottom:12px;box-shadow:var(--shadow2);}
+.card-title{font-size:13px;font-weight:600;color:var(--text2);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.5px;}
+.card-value{font-size:22px;font-weight:900;color:var(--text);}
+.card-sub{font-size:12px;color:var(--text2);margin-top:2px;}
+
+/* HUID карточка */
+.id-card{
+  background:linear-gradient(135deg,var(--green) 0%,var(--green-dark) 100%);
+  border-radius:20px;padding:20px;margin-bottom:16px;color:white;
+}
+.id-card-name{font-size:20px;font-weight:900;margin-bottom:4px;}
+.id-card-huid{font-size:11px;opacity:0.8;letter-spacing:1px;margin-bottom:16px;}
+.id-card-bottom{display:flex;justify-content:space-between;align-items:flex-end;}
+.id-card-label{font-size:10px;opacity:0.7;text-transform:uppercase;letter-spacing:1px;}
+.id-card-chip{width:32px;height:24px;background:rgba(255,255,255,0.3);border-radius:4px;}
+
+/* Страницы внутри app */
+.pg{display:none;position:fixed;inset:0;z-index:2000;background:var(--bg);flex-direction:column;}
+.pg.on{display:flex;}
+.pg-head{
+  background:var(--white);padding:calc(var(--safe-top) + 16px) 20px 16px;
+  display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border);
+  flex-shrink:0;
+}
+.pg-back{width:36px;height:36px;background:var(--bg);border-radius:50%;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.pg-back svg{width:18px;height:18px;fill:var(--text);}
+.pg-head-title{font-size:17px;font-weight:700;color:var(--text);}
+.pg-body{flex:1;overflow-y:auto;padding:16px;}
+
+/* Секции */
+.section-title{font-size:13px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:12px;margin-top:8px;}
+
+/* Список сервисов */
+.svc-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
+.svc-item{
+  background:var(--white);border-radius:var(--r);padding:16px 12px;
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  cursor:pointer;box-shadow:var(--shadow2);transition:transform .1s;
+}
+.svc-item:active{transform:scale(0.97);}
+.svc-icon{width:44px;height:44px;border-radius:12px;background:var(--green-light);display:flex;align-items:center;justify-content:center;}
+.svc-icon svg{width:22px;height:22px;fill:var(--green);}
+.svc-name{font-size:12px;font-weight:600;color:var(--text);text-align:center;}
+
+/* Уведомления */
+.toast{
+  position:fixed;top:calc(var(--safe-top) + 16px);left:16px;right:16px;
+  background:var(--text);color:white;padding:14px 16px;border-radius:var(--r);
+  font-size:14px;font-weight:500;z-index:99999;
+  transform:translateY(-20px);opacity:0;transition:all .25s;pointer-events:none;
+  font-family:var(--font);
+}
+.toast.show{transform:translateY(0);opacity:1;}
+
+/* Таб контент */
+.tab-content{display:none;}
+.tab-content.on{display:block;}
+
+/* Профиль */
+.prof-hero{
+  background:linear-gradient(135deg,var(--green),var(--green-dark));
+  border-radius:20px;padding:24px;margin-bottom:16px;
+  display:flex;flex-direction:column;align-items:center;gap:12px;
+}
+.prof-av{width:72px;height:72px;border-radius:50%;background:rgba(255,255,255,0.2);border:3px solid white;overflow:hidden;display:flex;align-items:center;justify-content:center;}
+.prof-av img{width:100%;height:100%;object-fit:cover;}
+.prof-av-ph{font-size:24px;font-weight:900;color:white;}
+.prof-name{font-size:20px;font-weight:900;color:white;}
+.prof-huid{font-size:11px;color:rgba(255,255,255,0.75);letter-spacing:1px;}
+
+/* Настройки строки */
+.set-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 0;border-bottom:1px solid var(--border);cursor:pointer;
+}
+.set-row:last-child{border-bottom:none;}
+.set-row-left{display:flex;align-items:center;gap:12px;}
+.set-row-icon{width:36px;height:36px;background:var(--green-light);border-radius:10px;display:flex;align-items:center;justify-content:center;}
+.set-row-icon svg{width:18px;height:18px;fill:var(--green);}
+.set-row-text{font-size:15px;font-weight:500;color:var(--text);}
+.set-row-arr svg{width:16px;height:16px;fill:var(--text2);}
+
+/* Чат ALAI */
+.chat-wrap{display:flex;flex-direction:column;height:100%;padding:0;}
+.chat-msgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;}
+.msg{max-width:80%;padding:10px 14px;border-radius:16px;font-size:14px;line-height:1.5;}
+.msg.bot{background:var(--white);color:var(--text);border-bottom-left-radius:4px;box-shadow:var(--shadow2);align-self:flex-start;}
+.msg.user{background:var(--green);color:white;border-bottom-right-radius:4px;align-self:flex-end;}
+.chat-input-row{
+  display:flex;gap:8px;padding:12px 16px calc(var(--safe-bot) + 12px);
+  background:var(--white);border-top:1px solid var(--border);
+}
+.chat-inp{
+  flex:1;padding:10px 14px;font-size:14px;font-family:var(--font);
+  background:var(--bg);border:1.5px solid var(--border);border-radius:99px;
+  color:var(--text);outline:none;
+}
+.chat-inp:focus{border-color:var(--green);}
+.chat-send{
+  width:40px;height:40px;background:var(--green);border-radius:50%;border:none;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;
+}
+.chat-send svg{width:18px;height:18px;fill:white;}
+
+/* Фид */
+.feed-item{background:var(--white);border-radius:var(--r);padding:16px;margin-bottom:10px;box-shadow:var(--shadow2);cursor:pointer;}
+.feed-item:active{transform:scale(0.99);}
+.feed-tag{display:inline-block;font-size:10px;font-weight:700;background:var(--green-light);color:var(--green);padding:3px 8px;border-radius:99px;margin-bottom:8px;letter-spacing:0.5px;}
+.feed-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:6px;line-height:1.4;}
+.feed-meta{font-size:12px;color:var(--text2);}
+
+/* Карта */
+#map-wrap{width:100%;height:260px;background:var(--green-light);border-radius:var(--r);margin-bottom:16px;overflow:hidden;position:relative;}
+.map-placeholder{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;}
+.map-placeholder svg{width:40px;height:40px;fill:var(--green);opacity:0.5;}
+.map-placeholder span{font-size:13px;color:var(--text2);}
+
+/* Кошелёк */
+.wallet-card{
+  background:linear-gradient(135deg,#1a1a2e,#16213e);
+  border-radius:20px;padding:20px;margin-bottom:16px;color:white;
+}
+.wallet-balance-label{font-size:11px;opacity:0.6;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;}
+.wallet-balance{font-size:32px;font-weight:900;}
+.wallet-currency{font-size:14px;opacity:0.7;margin-left:4px;}
+.wallet-actions{display:flex;gap:10px;margin-top:16px;}
+.wallet-btn{flex:1;padding:10px;background:rgba(255,255,255,0.15);border:none;border-radius:10px;color:white;font-size:13px;font-weight:600;font-family:var(--font);cursor:pointer;}
+
+/* Вакансии */
+.job-item{background:var(--white);border-radius:var(--r);padding:16px;margin-bottom:10px;box-shadow:var(--shadow2);cursor:pointer;}
+.job-company{font-size:12px;color:var(--text2);margin-bottom:4px;}
+.job-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:6px;}
+.job-tags{display:flex;gap:6px;flex-wrap:wrap;}
+.job-tag{font-size:11px;background:var(--green-light);color:var(--green);padding:3px 8px;border-radius:99px;font-weight:600;}
+
+/* Инвестиции */
+.invest-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border);}
+.invest-left{display:flex;align-items:center;gap:12px;}
+.invest-icon{width:40px;height:40px;border-radius:12px;background:var(--green-light);display:flex;align-items:center;justify-content:center;font-size:18px;}
+.invest-name{font-size:14px;font-weight:600;color:var(--text);}
+.invest-sub{font-size:12px;color:var(--text2);}
+.invest-val{text-align:right;}
+.invest-price{font-size:14px;font-weight:700;color:var(--text);}
+.invest-change{font-size:12px;color:var(--green);font-weight:600;}
+.invest-change.down{color:#EF4444;}
+
+/* Патент */
+.patent-card{
+  background:var(--white);border-radius:20px;padding:20px;
+  border:2px solid var(--green);margin-bottom:16px;
+}
+.patent-title{font-size:16px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.patent-id{font-size:11px;color:var(--green);letter-spacing:1px;margin-bottom:12px;}
+.patent-field{margin-bottom:10px;}
+.patent-field label{font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:4px;}
+.patent-field .val{font-size:14px;color:var(--text);font-weight:500;}
+
+/* Переключатель языка */
+.lang-btn{
+  position:absolute;top:calc(var(--safe-top) + 16px);right:16px;
+  background:var(--bg);border:1.5px solid var(--border);border-radius:99px;
+  padding:6px 12px;font-size:13px;font-weight:600;color:var(--text);
+  cursor:pointer;border:none;font-family:var(--font);z-index:10;
+}
+</style>
+</head>
+<body>
+
+<!-- SPLASH -->
+<div id="splash">
+  <div class="sp-logo">
+    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+  </div>
+  <div class="sp-title">BSMLH</div>
+  <div class="sp-sub">Biometric Security Ledger</div>
+  <div class="sp-bar"><div class="sp-fill" id="sp-fill"></div></div>
+</div>
+
+<!-- ЭКРАН 1: ИМЯ -->
+<div id="s1" class="scr on">
+  <button class="lang-btn" onclick="toggleLang()">🌐 RU</button>
+  <div class="steps-row">
+    <div class="step-dot on"></div>
+    <div class="step-dot"></div>
+    <div class="step-dot"></div>
+  </div>
+  <div class="scr-logo">
+    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+  </div>
+  <div class="scr-step">Шаг 1 из 3</div>
+  <div class="scr-h">Добро пожаловать в BSMLH</div>
+  <div class="scr-p">Создайте цифровую личность, защищённую биометрией и NFC-чипом</div>
+  <input class="inp" id="inp-name" placeholder="Ваше имя" autocomplete="off" autocorrect="off" spellcheck="false">
+  <button class="btn" onclick="step1Next()">Продолжить</button>
+</div>
+
+<!-- ЭКРАН 2: ФОТО -->
+<div id="s2" class="scr">
+  <div class="steps-row">
+    <div class="step-dot on"></div>
+    <div class="step-dot on"></div>
+    <div class="step-dot"></div>
+  </div>
+  <div class="scr-step">Шаг 2 из 3</div>
+  <div class="scr-h">Фото профиля</div>
+  <div class="scr-p">Загрузите фото или пропустите этот шаг</div>
+  <div style="display:flex;flex-direction:column;align-items:center;margin-bottom:24px;">
+    <div id="photo-prev" style="width:100px;height:100px;border-radius:50%;background:var(--green-light);border:3px solid var(--green);display:flex;align-items:center;justify-content:center;overflow:hidden;margin-bottom:16px;">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z" fill="#21A038"/></svg>
+    </div>
+    <input type="file" id="photo-inp" accept="image/*" style="display:none" onchange="loadPhoto(this)">
+    <button class="btn-ghost" style="width:auto;padding:10px 24px;" onclick="document.getElementById('photo-inp').click()">📷 Выбрать фото</button>
+  </div>
+  <button class="btn" onclick="showScr('s3')">Продолжить</button>
+  <button class="btn-ghost" onclick="showScr('s3')">Пропустить</button>
+</div>
+
+<!-- ЭКРАН 3: NFC -->
+<div id="s3" class="scr">
+  <div class="steps-row">
+    <div class="step-dot on"></div>
+    <div class="step-dot on"></div>
+    <div class="step-dot on"></div>
+  </div>
+  <div class="scr-step">Шаг 3 из 3 — NFC Чип</div>
+  <div class="scr-h">Активация BSMLH Chip</div>
+  <div class="scr-p">Поднесите NFC-чип к задней части телефона для активации</div>
+  <div class="nfc-card">
+    <div class="nfc-icon">
+      <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-5 14H9V8h6v2h-4v1h4v2h-4v1h4v2z"/></svg>
+    </div>
+    <div class="nfc-label">BSMLH CHIP · NTAG213</div>
+    <div class="nfc-status" id="nst1">Готов к сканированию</div>
+    <div id="beam1" style="display:none;width:100%;height:2px;background:var(--green);border-radius:99px;animation:pulse 1s infinite;"></div>
+  </div>
+  <button class="btn" id="nbtn1" onclick="nfcActivate(1)">🛡️ Активировать чип</button>
+  <button class="btn-ghost" onclick="showSMS()">Войти без чипа →</button>
+</div>
+
+<!-- ЭКРАН 4: SMS -->
+<div id="s4" class="scr">
+  <div id="ss1">
+    <div class="scr-step">Верификация</div>
+    <div class="scr-h">Введите номер телефона</div>
+    <div class="scr-p">Мы отправим код подтверждения на ваш номер</div>
+    <div class="phone-prefix">
+      <span class="prefix-flag">🇰🇿</span>
+      <span class="prefix-code">+7</span>
+      <div class="prefix-sep"></div>
+      <input class="prefix-inp" id="sms-phone" placeholder="XXX XXX XX XX" type="tel" inputmode="numeric">
+    </div>
+    <button class="btn" id="nbtn-sms" onclick="sendSMS()">Получить код</button>
+  </div>
+  <div id="ss2" style="display:none;">
+    <div class="scr-step">Верификация</div>
+    <div class="scr-h">Введите код</div>
+    <div class="code-hint" id="sms-hint">Код отправлен на ваш номер</div>
+    <input class="inp" id="sms-code" placeholder="_ _ _ _ _ _" type="tel" inputmode="numeric" maxlength="6" style="font-size:24px;letter-spacing:8px;text-align:center;">
+    <button class="btn" onclick="verifySMS()">Подтвердить</button>
+    <button class="btn-ghost" onclick="document.getElementById('ss1').style.display='block';document.getElementById('ss2').style.display='none';">← Изменить номер</button>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <!-- Хедер -->
+  <div class="app-head">
+    <div class="head-logo">
+      <div class="head-logo-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+      </div>
+      <span class="head-title">BSMLH</span>
+    </div>
+    <div class="head-avatar" onclick="openPg('pg-set')">
+      <img id="dash-av" src="" style="display:none">
+      <span class="head-avatar-ph" id="dash-av-ph">А</span>
+    </div>
+  </div>
+
+  <!-- Контент -->
+  <div class="app-body">
+    <!-- Таб: Главная -->
+    <div id="tab-home" class="tab-content on">
+      <div class="id-card">
+        <div class="id-card-name" id="id-name">ИМЯ</div>
+        <div class="id-card-huid" id="id-huid">BSMLH-2026-XXXXXXXXXXXXXXXX</div>
+        <div class="id-card-bottom">
+          <div>
+            <div class="id-card-label">Статус</div>
+            <div style="font-size:13px;color:rgba(255,255,255,0.9);font-weight:600;" id="id-chip-status">Без чипа</div>
+          </div>
+          <div class="id-card-chip"></div>
+        </div>
+      </div>
+
+      <div class="section-title">Сервисы</div>
+      <div class="svc-grid">
+        <div class="svc-item" onclick="openPg('pg-pat')">
+          <div class="svc-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11z"/></svg></div>
+          <span class="svc-name">Патент</span>
+        </div>
+        <div class="svc-item" onclick="openPg('pg-jobs')">
+          <div class="svc-icon"><svg viewBox="0 0 24 24"><path d="M20 6h-2.18c.07-.44.18-.88.18-1.36C18 2.98 16.52 2 15 2c-1.3 0-2.4.78-2.97 1.84L12 5h-.03L11 3.84C10.4 2.78 9.3 2 8 2 6.48 2 5 2.98 5 4.64c0 .48.1.92.18 1.36H3c-1.1 0-2 .9-2 2v11c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2z"/></svg></div>
+          <span class="svc-name">Работа</span>
+        </div>
+        <div class="svc-item" onclick="openPg('pg-wal')">
+          <div class="svc-icon"><svg viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.1 0-2-.9-2-2V5c0-1.1.9-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg></div>
+          <span class="svc-name">Кошелёк</span>
+        </div>
+        <div class="svc-item" onclick="openPg('pg-fund')">
+          <div class="svc-icon"><svg viewBox="0 0 24 24"><path d="M3.5 18.5l6-6 4 4L22 6.92 20.59 5.5l-7.09 8-4-4L2 17l1.5 1.5z"/></svg></div>
+          <span class="svc-name">Инвестиции</span>
+        </div>
+        <div class="svc-item" onclick="openPg('pg-chip')">
+          <div class="svc-icon"><svg viewBox="0 0 24 24"><path d="M7 2v2H5C3.9 4 3 4.9 3 6v2H1v2h2v4H1v2h2v2c0 1.1.9 2 2 2h2v2h2v-2h4v2h2v-2h2c1.1 0 2-.9 2-2v-2h2v-2h-2v-4h2V8h-2V6c0-1.1-.9-2-2-2h-2V2h-2v2H9V2H7zm2 4h6c.55 0 1 .45 1 1v8c0 .55-.45 1-1 1H9c-.55 0-1-.45-1-1V7c0-.55.45-1 1-1zm1 2v6h4V8h-4z"/></svg></div>
+          <span class="svc-name">NFC Чип</span>
+        </div>
+        <div class="svc-item" onclick="switchTab('chat')">
+          <div class="svc-icon"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg></div>
+          <span class="svc-name">ALAI ИИ</span>
+        </div>
+      </div>
+
+      <div class="section-title">Новости</div>
+      <div id="feed-home"></div>
+    </div>
+
+    <!-- Таб: Карта -->
+    <div id="tab-map" class="tab-content">
+      <div class="section-title">Карта сервисов</div>
+      <div id="map-wrap">
+        <div class="map-placeholder">
+          <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          <span>Карта загружается...</span>
+        </div>
+      </div>
+      <div class="section-title">Ближайшие точки</div>
+      <div class="feed-item"><div class="feed-tag">СЕРВИС</div><div class="feed-title">BSMLH Hub — Алматы</div><div class="feed-meta">2.3 км · ул. Абая 150</div></div>
+      <div class="feed-item"><div class="feed-tag">СЕРВИС</div><div class="feed-title">Партнёрский офис</div><div class="feed-meta">4.1 км · пр. Достык 85</div></div>
+    </div>
+
+    <!-- Таб: Чат -->
+    <div id="tab-chat" class="tab-content" style="display:none;height:calc(100vh - 120px - var(--safe-bot));flex-direction:column;">
+      <div class="chat-msgs" id="chat-msgs"></div>
+      <div class="chat-input-row">
+        <input class="chat-inp" id="chat-inp" placeholder="Спросите ALAI..." onkeydown="if(event.key==='Enter')sendChat()">
+        <button class="chat-send" onclick="sendChat()">
+          <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Таб: Профиль -->
+    <div id="tab-prof" class="tab-content">
+      <div class="prof-hero">
+        <div class="prof-av"><img id="p-av" src="" style="display:none"><span class="prof-av-ph" id="p-av-ph">А</span></div>
+        <div class="prof-name" id="p-name">ИМЯ</div>
+        <div class="prof-huid" id="p-huid">BSMLH-2026-...</div>
+      </div>
+      <div class="card">
+        <div class="set-row" onclick="openPg('pg-set')">
+          <div class="set-row-left"><div class="set-row-icon"><svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94s-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg></div><span class="set-row-text">Настройки</span></div>
+          <div class="set-row-arr"><svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></div>
+        </div>
+        <div class="set-row" onclick="openPg('pg-chip')">
+          <div class="set-row-left"><div class="set-row-icon"><svg viewBox="0 0 24 24"><path d="M7 2v2H5C3.9 4 3 4.9 3 6v2H1v2h2v4H1v2h2v2c0 1.1.9 2 2 2h2v2h2v-2h4v2h2v-2h2c1.1 0 2-.9 2-2v-2h2v-2h-2v-4h2V8h-2V6c0-1.1-.9-2-2-2h-2V2h-2v2H9V2H7z"/></svg></div><span class="set-row-text">NFC Чип</span></div>
+          <div class="set-row-arr"><svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></div>
+        </div>
+        <div class="set-row" onclick="T('Выход выполнен');showScr(\'s1\')">
+          <div class="set-row-left"><div class="set-row-icon"><svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg></div><span class="set-row-text">Выйти</span></div>
+          <div class="set-row-arr"><svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Навбар -->
+  <nav class="navbar">
+    <button class="nav-btn on" id="nav-home" onclick="switchTab('home')">
+      <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+      <span>Главная</span>
+    </button>
+    <button class="nav-btn" id="nav-map" onclick="switchTab('map')">
+      <svg viewBox="0 0 24 24"><path d="M20.5 3l-.16.03L15 5.1 9 3 3.36 4.9c-.21.07-.36.25-.36.48V20.5c0 .28.22.5.5.5l.16-.03L9 18.9l6 2.1 5.64-1.9c.21-.07.36-.25.36-.48V3.5c0-.28-.22-.5-.5-.5zM15 19l-6-2.11V5l6 2.11V19z"/></svg>
+      <span>Карта</span>
+    </button>
+    <button class="nav-btn" id="nav-chat" onclick="switchTab('chat')">
+      <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+      <span>ALAI</span>
+    </button>
+    <button class="nav-btn" id="nav-prof" onclick="switchTab('prof')">
+      <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+      <span>Профиль</span>
+    </button>
+  </nav>
+</div>
+
+<!-- СТРАНИЦЫ -->
+<!-- Патент -->
+<div id="pg-pat" class="pg">
+  <div class="pg-head">
+    <button class="pg-back" onclick="closePg('pg-pat')"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></button>
+    <span class="pg-head-title">Мой патент</span>
+  </div>
+  <div class="pg-body">
+    <div id="pat-empty" style="text-align:center;padding:40px 20px;">
+      <svg width="64" height="64" viewBox="0 0 24 24" fill="none"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11z" fill="#21A038" opacity="0.3"/></svg>
+      <div style="font-size:16px;font-weight:700;color:var(--text);margin:12px 0 4px;">Нет патента</div>
+      <div style="font-size:13px;color:var(--text2);margin-bottom:24px;">Зарегистрируйте своё изобретение</div>
+      <button class="btn" onclick="openPatentForm()">+ Добавить патент</button>
+    </div>
+    <div id="pat-form" style="display:none;">
+      <div class="section-title">Новый патент</div>
+      <input class="inp" id="pat-title" placeholder="Название изобретения">
+      <input class="inp" id="pat-niche" placeholder="Сфера / Ниша">
+      <textarea class="inp" id="pat-desc" placeholder="Описание изобретения" rows="4" style="resize:none;"></textarea>
+      <button class="btn" onclick="savePat()">Зарегистрировать</button>
+    </div>
+    <div id="pat-view" style="display:none;"></div>
+  </div>
+</div>
+
+<!-- Работа -->
+<div id="pg-jobs" class="pg">
+  <div class="pg-head">
+    <button class="pg-back" onclick="closePg('pg-jobs')"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></button>
+    <span class="pg-head-title">Биржа труда</span>
+  </div>
+  <div class="pg-body">
+    <div class="section-title">Вакансии</div>
+    <div class="job-item"><div class="job-company">TechKZ</div><div class="job-title">Frontend разработчик</div><div class="job-tags"><span class="job-tag">React</span><span class="job-tag">Remote</span><span class="job-tag">500K₸</span></div></div>
+    <div class="job-item"><div class="job-company">BSMLH Hub</div><div class="job-title">NFC-специалист</div><div class="job-tags"><span class="job-tag">NFC</span><span class="job-tag">Алматы</span><span class="job-tag">400K₸</span></div></div>
+    <div class="job-item"><div class="job-company">InvestKZ</div><div class="job-title">Финансовый аналитик</div><div class="job-tags"><span class="job-tag">Финансы</span><span class="job-tag">Hybrid</span><span class="job-tag">600K₸</span></div></div>
+    <div class="job-item"><div class="job-company">StartupAlmaty</div><div class="job-title">Product Manager</div><div class="job-tags"><span class="job-tag">PM</span><span class="job-tag">Remote</span><span class="job-tag">700K₸</span></div></div>
+  </div>
+</div>
+
+<!-- Кошелёк -->
+<div id="pg-wal" class="pg">
+  <div class="pg-head">
+    <button class="pg-back" onclick="closePg('pg-wal')"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></button>
+    <span class="pg-head-title">Кошелёк</span>
+  </div>
+  <div class="pg-body">
+    <div class="wallet-card">
+      <div class="wallet-balance-label">Баланс BSMLH Token</div>
+      <div><span class="wallet-balance">0.00</span><span class="wallet-currency">BST</span></div>
+      <div class="wallet-actions">
+        <button class="wallet-btn">↑ Пополнить</button>
+        <button class="wallet-btn">↓ Вывести</button>
+        <button class="wallet-btn">⇄ Обмен</button>
+      </div>
+    </div>
+    <div class="section-title">История транзакций</div>
+    <div style="text-align:center;padding:24px;color:var(--text2);font-size:13px;">Транзакций пока нет</div>
+  </div>
+</div>
+
+<!-- Инвестиции -->
+<div id="pg-fund" class="pg">
+  <div class="pg-head">
+    <button class="pg-back" onclick="closePg('pg-fund')"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></button>
+    <span class="pg-head-title">Инвестиции</span>
+  </div>
+  <div class="pg-body">
+    <div class="card" style="background:linear-gradient(135deg,var(--green),var(--green-dark));color:white;margin-bottom:16px;">
+      <div style="font-size:12px;opacity:0.8;margin-bottom:4px;">Портфель</div>
+      <div style="font-size:28px;font-weight:900;">$0.00</div>
+      <div style="font-size:12px;opacity:0.7;margin-top:4px;">BSMLH Token — в разработке</div>
+    </div>
+    <div class="section-title">Активы</div>
+    <div class="card">
+      <div class="invest-row"><div class="invest-left"><div class="invest-icon">₿</div><div><div class="invest-name">Bitcoin</div><div class="invest-sub">BTC</div></div></div><div class="invest-val"><div class="invest-price">$67,420</div><div class="invest-change">+2.4%</div></div></div>
+      <div class="invest-row"><div class="invest-left"><div class="invest-icon">Ξ</div><div><div class="invest-name">Ethereum</div><div class="invest-sub">ETH</div></div></div><div class="invest-val"><div class="invest-price">$3,240</div><div class="invest-change">+1.8%</div></div></div>
+      <div class="invest-row" style="border:none;"><div class="invest-left"><div class="invest-icon">🟢</div><div><div class="invest-name">BSMLH Token</div><div class="invest-sub">BST</div></div></div><div class="invest-val"><div class="invest-price">—</div><div class="invest-change" style="color:var(--text2);">Скоро</div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- NFC Чип -->
+<div id="pg-chip" class="pg">
+  <div class="pg-head">
+    <button class="pg-back" onclick="closePg('pg-chip')"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></button>
+    <span class="pg-head-title">NFC Чип</span>
+  </div>
+  <div class="pg-body">
+    <div class="nfc-card">
+      <div class="nfc-icon"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-5 14H9V8h6v2h-4v1h4v2h-4v1h4v2z"/></svg></div>
+      <div class="nfc-label" id="chip-status-label">ЧИП НЕ АКТИВИРОВАН</div>
+      <div class="nfc-status" id="nst2"></div>
+    </div>
+    <div id="chip-uid-block" style="display:none;" class="card">
+      <div class="card-title">UID Чипа</div>
+      <div class="card-value" id="chip-uid-val" style="font-size:16px;word-break:break-all;"></div>
+    </div>
+    <button class="btn" id="nbtn2" onclick="nfcActivate(2)">🛡️ Сканировать чип</button>
+  </div>
+</div>
+
+<!-- Настройки -->
+<div id="pg-set" class="pg">
+  <div class="pg-head">
+    <button class="pg-back" onclick="closePg('pg-set')"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></button>
+    <span class="pg-head-title">Настройки</span>
+  </div>
+  <div class="pg-body">
+    <div class="prof-hero">
+      <div class="prof-av"><img id="set-av" src="" style="display:none"><span id="set-av-ph" class="prof-av-ph">А</span></div>
+      <div class="prof-name" id="set-name">ИМЯ</div>
+      <div class="prof-huid" id="set-huid">BSMLH-2026-...</div>
+    </div>
+    <div class="card">
+      <div class="section-title">Аккаунт</div>
+      <div class="set-row">
+        <div class="set-row-left"><div class="set-row-icon"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></div><span class="set-row-text" id="set-phone">Телефон не указан</span></div>
+        <div class="set-row-arr"><svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></div>
+      </div>
+      <div class="set-row">
+        <div class="set-row-left">
+          <div class="set-row-icon"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg></div>
+          <span class="set-row-text" id="set-chip-txt">Чип не активирован</span>
+        </div>
+        <div class="set-row-arr"><svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:12px;">
+      <div class="set-row" onclick="T('Уведомления')">
+        <div class="set-row-left"><div class="set-row-icon"><svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg></div><span class="set-row-text">Уведомления</span></div>
+        <div class="set-row-arr"><svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></div>
+      </div>
+      <div class="set-row" onclick="T('Язык')">
+        <div class="set-row-left"><div class="set-row-icon"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm6.93 6h-2.95c-.32-1.25-.78-2.45-1.38-3.56 1.84.63 3.37 1.9 4.33 3.56zM12 4.04c.83 1.2 1.48 2.53 1.91 3.96h-3.82c.43-1.43 1.08-2.76 1.91-3.96zM4.26 14C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2s.06 1.34.14 2H4.26zm.82 2h2.95c.32 1.25.78 2.45 1.38 3.56-1.84-.63-3.37-1.9-4.33-3.56zm2.95-8H5.08c.96-1.66 2.49-2.93 4.33-3.56C8.81 5.55 8.35 6.75 8.03 8zM12 19.96c-.83-1.2-1.48-2.53-1.91-3.96h3.82c-.43 1.43-1.08 2.76-1.91 3.96zM14.34 14H9.66c-.09-.66-.16-1.32-.16-2s.07-1.35.16-2h4.68c.09.65.16 1.32.16 2s-.07 1.34-.16 2zm.25 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95c-.96 1.65-2.49 2.93-4.33 3.56zM16.36 14c.08-.66.14-1.32.14-2s-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2h-3.38z"/></svg></div><span class="set-row-text">Язык</span></div>
+        <div class="set-row-arr"><svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></div>
+      </div>
+    </div>
+    <button class="btn" style="background:#EF4444;margin-top:16px;" onclick="T('Выход');showScr('s1')">Выйти из аккаунта</button>
+  </div>
+</div>
+
+<div id="recaptcha-container"></div>
+<div class="toast" id="toast"></div>
+
+<style>
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+</style>
+
+<script>
+var U={name:'',huid:'',phone:'',photo:'',hasChip:false,chipUID:''};
+
+function el(id){return document.getElementById(id);}
+function T(msg){
+  var t=el('toast');t.innerText=msg;t.classList.add('show');
+  setTimeout(function(){t.classList.remove('show');},2800);
+}
+
+// SPLASH
+(function(){
+  var fill=el('sp-fill');
+  if(fill) setTimeout(function(){fill.style.width='100%';},100);
+  setTimeout(function(){
+    var s=el('splash');
+    if(s) s.style.display='none';
+  },2500);
+})();
+
+// ── ПЕРЕХОДЫ ──
+function showScr(id){
+  document.querySelectorAll('.scr').forEach(function(s){s.style.display='none';});
+  var s=el(id);
+  if(s){s.style.display='flex';}
+}
+
+function step1Next(){
+  var n=el('inp-name');
+  if(!n||!n.value.trim()){T('Введите ваше имя');return;}
+  U.name=n.value.trim();
+  showScr('s2');
+}
+
+function loadPhoto(inp){
+  if(!inp.files||!inp.files[0]) return;
+  var r=new FileReader();
+  r.onload=function(e){
+    U.photo=e.target.result;
+    var prev=el('photo-prev');
+    prev.innerHTML='<img src="'+e.target.result+'" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">';
+  };
+  r.readAsDataURL(inp.files[0]);
+}
+
+function showSMS(){showScr('s4');}
+
+// ── FIREBASE SMS ──
+function sendSMS(){
+  var inp=el('sms-phone');
+  var phone=inp?inp.value.trim():'';
+  if(!phone){T('Введите номер телефона');return;}
+  if(!phone.startsWith('+')) phone='+7'+phone.replace(/\D/g,'');
+  T('Отправляем код...');
+  if(!window.recaptchaVerifier){
+    window.recaptchaVerifier=new firebase.auth.RecaptchaVerifier('recaptcha-container',{
+      size:'invisible',callback:function(){}
+    });
+  }
+  firebase.auth().signInWithPhoneNumber(phone,window.recaptchaVerifier)
+    .then(function(cr){
+      window.confirmationResult=cr;
+      el('ss1').style.display='none';
+      el('ss2').style.display='block';
+      var hint=el('sms-hint');
+      if(hint) hint.innerText='Код отправлен на '+phone;
+      T('✅ Код отправлен');
+    })
+    .catch(function(err){
+      T('Ошибка: '+err.message);
+      if(window.recaptchaVerifier){window.recaptchaVerifier.clear();window.recaptchaVerifier=null;}
+    });
+}
+
+function verifySMS(){
+  var code=el('sms-code');
+  if(!code||!code.value.trim()){T('Введите код');return;}
+  if(!window.confirmationResult){T('Сначала отправьте код');return;}
+  window.confirmationResult.confirm(code.value.trim())
+    .then(function(result){
+      U.phone=result.user.phoneNumber;
+      U.uid=result.user.uid;
+      localStorage.setItem('bsmlh_phone',U.phone);
+      localStorage.setItem('bsmlh_uid',U.uid);
+      T('✅ Номер подтверждён');
+      toApp();
+    })
+    .catch(function(){T('Неверный код');});
+}
+
+// ── NFC ──
+async function nfcActivate(ctx){
+  var btn=el('nbtn'+ctx),beam=el('beam'+ctx),st=el('nst'+ctx);
+  if(!('NDEFReader' in window)){
+    if(st) st.innerText='NFC не поддерживается на этом устройстве';
+    return;
+  }
+  if(btn) btn.disabled=true;
+  if(beam) beam.style.display='block';
+  if(st) st.innerText='Сканирование...';
+  try{
+    var ndef=new NDEFReader();
+    await ndef.scan();
+    var to=setTimeout(function(){
+      if(beam) beam.style.display='none';
+      if(btn) btn.disabled=false;
+      if(st) st.innerText='Чип не найден. Попробуйте снова.';
+    },6000);
+    ndef.onreading=function(e){
+      clearTimeout(to);
+      if(beam) beam.style.display='none';
+      var uid=e.serialNumber||'';
+      U.hasChip=true;U.chipUID=uid;
+      localStorage.setItem('bsmlh_chip_uid',uid);
+      if(st) st.innerText='✅ UID: '+uid;
+      if(btn) btn.disabled=false;
+      refreshChipUI();
+      T('🛡️ Чип активирован! UID: '+uid);
+      if(ctx===1) setTimeout(showSMS,800);
+    };
+  }catch(e){
+    if(beam) beam.style.display='none';
+    if(btn) btn.disabled=false;
+    if(st) st.innerText='Разрешите доступ к NFC в браузере';
+  }
+}
+
+function refreshChipUI(){
+  var s=U.hasChip?'✅ Чип активирован':'Без чипа';
+  var st=el('id-chip-status');if(st) st.innerText=s;
+  var sl=el('chip-status-label');if(sl) sl.innerText=U.hasChip?'ЧИП АКТИВИРОВАН':'ЧИП НЕ АКТИВИРОВАН';
+  var sc=el('set-chip-txt');if(sc) sc.innerText=U.hasChip?'Чип: '+U.chipUID:'Чип не активирован';
+  if(U.hasChip&&U.chipUID){
+    var ub=el('chip-uid-block');if(ub) ub.style.display='block';
+    var uv=el('chip-uid-val');if(uv) uv.innerText=U.chipUID;
+  }
+}
+
+// ── ЗАПУСК APP ──
+function toApp(){
+  var chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789',uid='';
+  for(var i=0;i<16;i++) uid+=chars[Math.floor(Math.random()*chars.length)];
+  U.huid='BSMLH-2026-'+uid;
+  // Установить данные
+  ['id-name','p-name','set-name'].forEach(function(id){var e=el(id);if(e)e.innerText=U.name.toUpperCase();});
+  ['id-huid','p-huid','set-huid'].forEach(function(id){var e=el(id);if(e)e.innerText=U.huid;});
+  // Инициалы аватара
+  var initl=U.name.charAt(0).toUpperCase();
+  ['dash-av-ph','p-av-ph','set-av-ph'].forEach(function(id){var e=el(id);if(e)e.innerText=initl;});
+  // Фото
+  if(U.photo){
+    ['dash-av','p-av','set-av'].forEach(function(id){
+      var e=el(id);if(e){e.src=U.photo;e.style.display='block';}
+    });
+    ['dash-av-ph','p-av-ph','set-av-ph'].forEach(function(id){
+      var e=el(id);if(e)e.style.display='none';
+    });
+  }
+  if(U.phone){var sp=el('set-phone');if(sp)sp.innerText=U.phone;}
+  refreshChipUI();
+  // Скрыть онбординг, показать app
+  document.querySelectorAll('.scr').forEach(function(s){s.style.display='none';});
+  var app=el('app');if(app){app.style.display='flex';}
+  loadFeed();
+  addMsg('bot','👋 Привет, '+U.name+'! Я ALAI — ваш ИИ-ассистент BSMLH. Чем могу помочь?');
+}
+
+// ── ТАБЫ ──
+function switchTab(name){
+  ['home','map','chat','prof'].forEach(function(t){
+    var tc=el('tab-'+t);
+    if(tc){
+      if(t==='chat') tc.style.display=(t===name?'flex':'none');
+      else{tc.classList.toggle('on',t===name);}
+    }
+    var nb=el('nav-'+t);if(nb) nb.classList.toggle('on',t===name);
+  });
+}
+
+// ── СТРАНИЦЫ ──
+function openPg(id){var p=el(id);if(p){p.style.display='flex';}}
+function closePg(id){var p=el(id);if(p){p.style.display='none';}}
+
+// ── ПАТЕНТ ──
+function openPatentForm(){
+  el('pat-empty').style.display='none';
+  el('pat-form').style.display='block';
+}
+function savePat(){
+  var title=el('pat-title').value.trim();
+  var niche=el('pat-niche').value.trim();
+  var desc=el('pat-desc').value.trim();
+  if(!title){T('Введите название изобретения');return;}
+  var id='BST-'+Date.now().toString(36).toUpperCase();
+  var date=new Date().toLocaleDateString('ru-RU');
+  el('pat-form').style.display='none';
+  var view=el('pat-view');
+  view.style.display='block';
+  view.innerHTML='<div class="patent-card"><div class="patent-title">'+title+'</div><div class="patent-id">'+id+'</div><div class="patent-field"><label>Автор</label><div class="val">'+U.name+'</div></div><div class="patent-field"><label>HUID</label><div class="val">'+U.huid+'</div></div><div class="patent-field"><label>Ниша</label><div class="val">'+(niche||'—')+'</div></div><div class="patent-field"><label>Описание</label><div class="val">'+desc+'</div></div><div class="patent-field"><label>Дата</label><div class="val">'+date+'</div></div></div>';
+  T('✅ Патент зарегистрирован');
+}
+
+// ── ФИИД ──
+function loadFeed(){
+  var items=[
+    {tag:'НОВОСТЬ',title:'BSMLH запускает NFC-идентификацию в Казахстане',time:'2 ч назад'},
+    {tag:'ОБНОВЛЕНИЕ',title:'Новая функция: биржа труда теперь доступна',time:'5 ч назад'},
+    {tag:'ТЕХНОЛОГИИ',title:'NTAG213: как работает NFC-чип BSMLH',time:'1 день назад'},
+    {tag:'ИНВЕСТИЦИИ',title:'BST Token — скоро на биржах',time:'2 дня назад'},
+  ];
+  var f=el('feed-home');if(!f)return;
+  f.innerHTML=items.map(function(i){
+    return '<div class="feed-item"><div class="feed-tag">'+i.tag+'</div><div class="feed-title">'+i.title+'</div><div class="feed-meta">'+i.time+'</div></div>';
+  }).join('');
+}
+
+// ── ALAI ЧАТ ──
+function addMsg(type,text){
+  var msgs=el('chat-msgs');if(!msgs)return;
+  var d=document.createElement('div');
+  d.className='msg '+type;d.innerText=text;
+  msgs.appendChild(d);
+  msgs.scrollTop=msgs.scrollHeight;
+}
+function sendChat(){
+  var inp=el('chat-inp');
+  if(!inp||!inp.value.trim())return;
+  var q=inp.value.trim();inp.value='';
+  addMsg('user',q);
+  setTimeout(function(){
+    addMsg('bot','Понял вас. Обрабатываю запрос: "'+q+'". Функция ИИ-ответов скоро будет доступна.');
+  },600);
+}
+
+// ── ЯЗЫК ──
+function toggleLang(){T('Смена языка — скоро');}
+</script>
+</body>
+</html>
