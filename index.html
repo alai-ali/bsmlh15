@@ -563,25 +563,54 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 <div id="pg-pat" class="pg">
   <div class="pg-head">
     <button class="pg-back" onclick="closePg('pg-pat')"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></button>
-    <span class="pg-head-title">Мой патент</span>
+    <span class="pg-head-title">🛠️ Патентная мастерская</span>
   </div>
   <div class="pg-body">
-    <div id="pat-empty" style="text-align:center;padding:40px 20px;">
-      <svg width="64" height="64" viewBox="0 0 24 24" fill="none"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11z" fill="#21A038" opacity="0.3"/></svg>
-      <div style="font-size:16px;font-weight:700;color:var(--text);margin:12px 0 4px;">Нет патента</div>
-      <div style="font-size:13px;color:var(--text2);margin-bottom:24px;">Зарегистрируйте своё изобретение</div>
-      <button class="btn" onclick="openPatentForm()">+ Добавить патент</button>
+    <div id="pat-view" style="display:none;margin-bottom:16px;"></div>
+    <div id="pat-empty" style="text-align:center;padding:24px 0 16px;">
+      <svg width="56" height="56" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11z" fill="#21A038" opacity="0.3"/></svg>
+      <div style="font-size:14px;color:var(--text2);margin-top:8px;">Нет зарегистрированных изобретений</div>
     </div>
-    <div id="pat-form" style="display:none;">
-      <div class="section-title">Новый патент</div>
-      <input class="inp" id="pat-title" placeholder="Название изобретения">
-      <input class="inp" id="pat-niche" placeholder="Сфера / Ниша">
-      <textarea class="inp" id="pat-desc" placeholder="Описание изобретения" rows="4" style="resize:none;"></textarea>
-      <button class="btn" onclick="savePat()">Зарегистрировать</button>
+    <div class="card">
+      <div class="section-title">+ Новое изобретение</div>
+      <select class="inp" id="inv-niche" style="appearance:none;">
+        <option value="">Выберите нишу...</option>
+        <option value="IT">💻 Информационные технологии</option>
+        <option value="MED">🏥 Медицина и здоровье</option>
+        <option value="AGR">🌾 Сельское хозяйство</option>
+        <option value="ENE">⚡ Энергетика</option>
+        <option value="TRN">🚗 Транспорт</option>
+        <option value="ECO">🌍 Экология</option>
+        <option value="EDU">📚 Образование</option>
+        <option value="FIN">💰 Финансы и блокчейн</option>
+        <option value="SEC">🛡️ Безопасность</option>
+        <option value="OTH">🔧 Другое</option>
+      </select>
+      <input class="inp" id="inv-t" placeholder="Название изобретения">
+      <textarea class="inp" id="inv-d" placeholder="Описание — что делает, как работает, в чём уникальность..." rows="4" style="resize:none;"></textarea>
+      <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.5px;">Уровень защиты</div>
+      <div style="display:flex;gap:8px;margin-bottom:16px;">
+        <div id="lv1" onclick="slv(1)" style="flex:1;border:2px solid var(--green);border-radius:12px;padding:12px 8px;text-align:center;cursor:pointer;background:var(--green-light);">
+          <div style="font-weight:900;font-size:16px;color:var(--green);">L1</div>
+          <div style="font-size:11px;color:var(--text2);">Timestamp</div>
+          <div style="font-size:13px;font-weight:700;color:var(--text);margin-top:4px;">$0.99</div>
+        </div>
+        <div id="lv2" onclick="slv(2)" style="flex:1;border:2px solid var(--border);border-radius:12px;padding:12px 8px;text-align:center;cursor:pointer;">
+          <div style="font-weight:900;font-size:16px;color:var(--text2);">L2</div>
+          <div style="font-size:11px;color:var(--text2);">Prior Art</div>
+          <div style="font-size:13px;font-weight:700;color:var(--text);margin-top:4px;">$9.99</div>
+        </div>
+        <div id="lv3" onclick="slv(3)" style="flex:1;border:2px solid var(--border);border-radius:12px;padding:12px 8px;text-align:center;cursor:pointer;">
+          <div style="font-weight:900;font-size:16px;color:var(--text2);">L3</div>
+          <div style="font-size:11px;color:var(--text2);">Certificate</div>
+          <div style="font-size:13px;font-weight:700;color:var(--text);margin-top:4px;">$49.99</div>
+        </div>
+      </div>
+      <button class="btn" onclick="tryFixInv()">🛡️ Приложить чип и зафиксировать</button>
     </div>
-    <div id="pat-view" style="display:none;"></div>
   </div>
 </div>
+
 
 <!-- Работа -->
 <div id="pg-jobs" class="pg">
@@ -989,6 +1018,75 @@ function sendChat(){
 }
 
 // ── ЯЗЫК ──
+var curLv=1;
+function slv(n){
+  curLv=n;
+  [1,2,3].forEach(function(i){
+    var el2=el('lv'+i);if(!el2)return;
+    if(i===n){
+      el2.style.border='2px solid var(--green)';
+      el2.style.background='var(--green-light)';
+      el2.querySelector('div').style.color='var(--green)';
+    } else {
+      el2.style.border='2px solid var(--border)';
+      el2.style.background='white';
+      el2.querySelector('div').style.color='var(--text2)';
+    }
+  });
+}
+function tryFixInv(){
+  var t=el('inv-t').value.trim();
+  var d=el('inv-d').value.trim();
+  var n=el('inv-niche').value;
+  if(!n){T('Выберите нишу');return;}
+  if(!t){T('Введите название изобретения');return;}
+  if(!d){T('Введите описание');return;}
+  var id='BST-'+Date.now().toString(36).toUpperCase();
+  var date=new Date().toLocaleDateString('ru-RU');
+  var hashVal=0;
+  var str=t+'|'+U.huid+'|'+date;
+  for(var i=0;i<str.length;i++){hashVal=((hashVal<<5)-hashVal)+str.charCodeAt(i);hashVal=hashVal&hashVal;}
+  var hash='BSH-'+Math.abs(hashVal).toString(16).toUpperCase().padStart(8,'0');
+  var pat={id:id,title:t,niche:n,desc:d,date:date,hash:hash,author:U.name,huid:U.huid,level:'L'+curLv};
+  try{localStorage.setItem('bsmlh_patent',JSON.stringify(pat));}catch(e){}
+  el('pat-empty').style.display='none';
+  var view=el('pat-view');
+  view.style.display='block';
+  view.innerHTML='<div class="patent-card">'
+    +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">'
+    +'<div style="background:var(--green);color:white;padding:4px 10px;border-radius:8px;font-size:12px;font-weight:700;">'+pat.level+'</div>'
+    +'<div class="patent-title" style="margin:0;">'+t+'</div></div>'
+    +'<div class="patent-id">'+id+'</div>'
+    +'<div class="patent-field"><label>Автор</label><div class="val">'+U.name+'</div></div>'
+    +'<div class="patent-field"><label>HUID</label><div class="val" style="font-size:12px;">'+U.huid+'</div></div>'
+    +'<div class="patent-field"><label>Ниша</label><div class="val">'+n+'</div></div>'
+    +'<div class="patent-field"><label>Описание</label><div class="val">'+d+'</div></div>'
+    +'<div class="patent-field"><label>Дата</label><div class="val">'+date+'</div></div>'
+    +'<div class="patent-field"><label>SHA хэш</label><div class="val" style="font-family:monospace;font-size:12px;color:var(--green);">'+hash+'</div></div>'
+    +'</div>';
+  T('✅ Изобретение зафиксировано на уровне L'+curLv+'!');
+  // Очистить форму
+  el('inv-t').value='';el('inv-d').value='';el('inv-niche').value='';
+}
+function loadPatent(){
+  try{
+    var p=localStorage.getItem('bsmlh_patent');
+    if(p){
+      var pat=JSON.parse(p);
+      el('pat-empty').style.display='none';
+      var view=el('pat-view');
+      view.style.display='block';
+      view.innerHTML='<div class="patent-card">'
+        +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">'
+        +'<div style="background:var(--green);color:white;padding:3px 8px;border-radius:6px;font-size:11px;font-weight:700;">'+(pat.level||'L1')+'</div>'
+        +'<div class="patent-title" style="margin:0;">'+pat.title+'</div></div>'
+        +'<div class="patent-id">'+pat.id+'</div>'
+        +'<div class="patent-field"><label>Дата</label><div class="val">'+pat.date+'</div></div>'
+        +'<div class="patent-field"><label>SHA хэш</label><div class="val" style="font-family:monospace;font-size:12px;color:var(--green);">'+pat.hash+'</div></div>'
+        +'</div>';
+    }
+  }catch(e){}
+}
 function toggleLang(){T('Смена языка — скоро');}
 </script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
