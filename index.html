@@ -870,6 +870,7 @@ function toApp(){
   document.querySelectorAll('.scr').forEach(function(s){s.style.display='none';});
   var app=el('app');if(app){app.style.display='flex';}
   loadFeed();
+  loadPatent();
   addMsg('bot','👋 Привет, '+U.name+'! Я ALAI — ваш ИИ-ассистент BSMLH. Чем могу помочь?');
 }
 
@@ -893,6 +894,53 @@ function closePg(id){var p=el(id);if(p){p.style.display='none';}}
 function openPatentForm(){
   el('pat-empty').style.display='none';
   el('pat-form').style.display='block';
+}
+function savePat(){
+  var title=el('pat-title').value.trim();
+  var niche=el('pat-niche').value.trim();
+  var desc=el('pat-desc').value.trim();
+  if(!title){T('Введите название изобретения');return;}
+  if(!desc){T('Введите описание');return;}
+  var id='BST-'+Date.now().toString(36).toUpperCase();
+  var date=new Date().toLocaleDateString('ru-RU');
+  var hashVal=0;
+  var str=title+'|'+U.huid+'|'+date;
+  for(var i=0;i<str.length;i++){hashVal=((hashVal<<5)-hashVal)+str.charCodeAt(i);hashVal=hashVal&hashVal;}
+  var hash='BSH-'+Math.abs(hashVal).toString(16).toUpperCase().padStart(8,'0');
+  var pat={id:id,title:title,niche:niche,desc:desc,date:date,hash:hash,author:U.name,huid:U.huid};
+  try{localStorage.setItem('bsmlh_patent',JSON.stringify(pat));}catch(e){}
+  el('pat-form').style.display='none';
+  var view=el('pat-view');
+  view.style.display='block';
+  view.innerHTML='<div class="patent-card">'
+    +'<div class="patent-title">'+title+'</div>'
+    +'<div class="patent-id">'+id+'</div>'
+    +'<div class="patent-field"><label>Автор</label><div class="val">'+U.name+'</div></div>'
+    +'<div class="patent-field"><label>HUID</label><div class="val" style="font-size:12px;">'+U.huid+'</div></div>'
+    +'<div class="patent-field"><label>Ниша</label><div class="val">'+(niche||'—')+'</div></div>'
+    +'<div class="patent-field"><label>Описание</label><div class="val">'+desc+'</div></div>'
+    +'<div class="patent-field"><label>Дата</label><div class="val">'+date+'</div></div>'
+    +'<div class="patent-field"><label>Хэш</label><div class="val" style="font-family:monospace;font-size:12px;">'+hash+'</div></div>'
+    +'</div>';
+  T('✅ Патент зарегистрирован!');
+}
+function loadPatent(){
+  try{
+    var p=localStorage.getItem('bsmlh_patent');
+    if(p){
+      var pat=JSON.parse(p);
+      el('pat-empty').style.display='none';
+      var view=el('pat-view');
+      view.style.display='block';
+      view.innerHTML='<div class="patent-card">'
+        +'<div class="patent-title">'+pat.title+'</div>'
+        +'<div class="patent-id">'+pat.id+'</div>'
+        +'<div class="patent-field"><label>Автор</label><div class="val">'+pat.author+'</div></div>'
+        +'<div class="patent-field"><label>Дата</label><div class="val">'+pat.date+'</div></div>'
+        +'<div class="patent-field"><label>Хэш</label><div class="val" style="font-family:monospace;font-size:12px;">'+pat.hash+'</div></div>'
+        +'</div>';
+    }
+  }catch(e){}
 }
 function savePat(){
   var title=el('pat-title').value.trim();
