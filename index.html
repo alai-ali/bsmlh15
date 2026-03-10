@@ -772,12 +772,13 @@ function sendSMS(){
   if(!phone){T('Введите номер телефона');return;}
   if(!phone.startsWith('+')) phone='+7'+phone.replace(/\D/g,'');
   T('Отправляем код...');
-  if(!window.recaptchaVerifier){
-    window.recaptchaVerifier=new firebase.auth.RecaptchaVerifier('recaptcha-container',{
-      size:'invisible',callback:function(){}
-    });
-  }
-  firebase.auth().signInWithPhoneNumber(phone,window.recaptchaVerifier)
+  try{if(window.recaptchaVerifier){window.recaptchaVerifier.clear();window.recaptchaVerifier=null;}}catch(e){}
+  var rc=el('recaptcha-container');if(rc)rc.innerHTML='';
+  window.recaptchaVerifier=new firebase.auth.RecaptchaVerifier('recaptcha-container',{
+    size:'invisible',callback:function(){}
+  });
+  window.recaptchaVerifier.render().then(function(){
+    firebase.auth().signInWithPhoneNumber(phone,window.recaptchaVerifier)
     .then(function(cr){
       window.confirmationResult=cr;
       el('ss1').style.display='none';
@@ -790,6 +791,7 @@ function sendSMS(){
       T('Ошибка: '+err.message);
       if(window.recaptchaVerifier){window.recaptchaVerifier.clear();window.recaptchaVerifier=null;}
     });
+  });
 }
 
 function verifySMS(){
