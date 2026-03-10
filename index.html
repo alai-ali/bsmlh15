@@ -6,10 +6,16 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <title>BSMLH</title>
+<meta name="theme-color" content="#21A038">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-touch-fullscreen" content="yes">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700;900&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.google.com/recaptcha/api.js?render=6LeRi4UsAAAAAFIzrQYabSCq5gjnRoetl4K5c"></script>
 <script>
 firebase.initializeApp({
   apiKey:"AIzaSyBlD8lNdYdubHXr13IhPkmkCnNQQLChtVA",
@@ -712,7 +718,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
   </div>
 </div>
 
-<div id="recaptcha-container"></div>
+
 <div class="toast" id="toast"></div>
 
 <style>
@@ -770,28 +776,29 @@ function sendSMS(){
   var inp=el('sms-phone');
   var phone=inp?inp.value.trim():'';
   if(!phone){T('Введите номер телефона');return;}
-  if(!phone.startsWith('+')) phone='+7'+phone.replace(/\D/g,'');
+  if(!phone.startsWith('+')) phone='+7'+phone.replace(/[^0-9]/g,'');
   T('Отправляем код...');
-  try{if(window.recaptchaVerifier){window.recaptchaVerifier.clear();window.recaptchaVerifier=null;}}catch(e){}
-  var rc=el('recaptcha-container');if(rc)rc.innerHTML='';
-  window.recaptchaVerifier=new firebase.auth.RecaptchaVerifier('recaptcha-container',{
-    size:'invisible',callback:function(){}
-  });
-  window.recaptchaVerifier.render().then(function(){
-    firebase.auth().signInWithPhoneNumber(phone,window.recaptchaVerifier)
+  if(window.recaptchaVerifier){
+    try{window.recaptchaVerifier.clear();}catch(e){}
+    window.recaptchaVerifier=null;
+  }
+  var old=document.getElementById('rc-tmp');if(old)old.remove();
+  var rc=document.createElement('div');
+  rc.id='rc-tmp';rc.style.cssText='position:fixed;bottom:-200px;opacity:0;pointer-events:none;';
+  document.body.appendChild(rc);
+  window.recaptchaVerifier=new firebase.auth.RecaptchaVerifier('rc-tmp',{size:'invisible',callback:function(){}});
+  firebase.auth().signInWithPhoneNumber(phone,window.recaptchaVerifier)
     .then(function(cr){
       window.confirmationResult=cr;
       el('ss1').style.display='none';
       el('ss2').style.display='block';
-      var hint=el('sms-hint');
-      if(hint) hint.innerText='Код отправлен на '+phone;
-      T('✅ Код отправлен');
+      var hint=el('sms-hint');if(hint)hint.innerText='Код отправлен на '+phone;
+      T('Код отправлен');
     })
     .catch(function(err){
       T('Ошибка: '+err.message);
-      if(window.recaptchaVerifier){window.recaptchaVerifier.clear();window.recaptchaVerifier=null;}
+      if(window.recaptchaVerifier){try{window.recaptchaVerifier.clear();}catch(e){}window.recaptchaVerifier=null;}
     });
-  });
 }
 
 function verifySMS(){
