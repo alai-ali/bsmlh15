@@ -793,14 +793,16 @@ function T(msg){
 }
 
 // SPLASH
-(function(){
-  var fill=el('sp-fill');
-  if(fill) setTimeout(function(){fill.style.width='100%';},100);
-  setTimeout(function(){
-    var s=el('splash');
-    if(s) s.style.display='none';
-  },2500);
-})();
+function hideSplash(){
+  var s=document.getElementById('splash');
+  if(s) s.style.display='none';
+}
+// Скрыть через 2.5 сек в любом случае
+setTimeout(hideSplash, 2500);
+// Или раньше если страница уже загружена
+if(document.readyState==='complete'){
+  setTimeout(hideSplash, 500);
+}
 
 // ── ПЕРЕХОДЫ ──
 function showScr(id){
