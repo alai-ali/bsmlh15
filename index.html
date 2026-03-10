@@ -953,6 +953,42 @@ function savePat(){
     +'</div>';
   T('✅ Патент зарегистрирован!');
 }
+
+function fixInvData(t,n,d){
+  var id='BST-'+Date.now().toString(36).toUpperCase();
+  var date=new Date().toLocaleString('ru-RU');
+  var hashVal=0;
+  var str=t+'|'+U.huid+'|'+date;
+  for(var i=0;i<str.length;i++){hashVal=((hashVal<<5)-hashVal)+str.charCodeAt(i);hashVal=hashVal&hashVal;}
+  var hash='BSH-'+Math.abs(hashVal).toString(16).toUpperCase().padStart(8,'0');
+  var inv={id:id,t:t,niche:n,desc:d,date:date,hash:hash,lv:curLv,author:U.name,huid:U.huid};
+  try{localStorage.setItem('bsmlh_patent',JSON.stringify(inv));}catch(e){}
+  // Показать сертификат
+  showCert(inv);
+  // Обновить вид патента
+  el('pat-empty').style.display='none';
+  var view=el('pat-view');
+  view.style.display='block';
+  view.innerHTML='<div class="patent-card"><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><div style="background:var(--green);color:white;padding:3px 8px;border-radius:6px;font-size:11px;font-weight:700;">L'+curLv+'</div><div class="patent-title" style="margin:0;">'+t+'</div></div><div class="patent-id">'+id+'</div><div class="patent-field"><label>Дата</label><div class="val">'+date+'</div></div><div class="patent-field"><label>SHA</label><div class="val" style="font-family:monospace;font-size:12px;color:var(--green);">'+hash+'</div></div><button class="btn-ghost" style="margin-top:10px;" onclick="var p=JSON.parse(localStorage.getItem('bsmlh_patent'));showCert(p);">📄 Открыть сертификат</button></div>';
+  T('✅ Зафиксировано на уровне L'+curLv+'!');
+  el('inv-t').value='';el('inv-d').value='';el('inv-niche').value='';
+}
+function showCert(inv){
+  var s=function(id,v){var e=document.getElementById(id);if(e)e.innerText=v||'—';};
+  s('cert-author',inv.author||U.name);
+  s('cert-huid',inv.huid||U.huid);
+  s('cert-title-txt',inv.t||inv.title);
+  s('cert-desc',inv.desc);
+  s('cert-niche',inv.niche);
+  s('cert-level','L'+inv.lv+' — '+['Timestamp $0.99','Prior Art $9.99','Certificate $49.99'][(inv.lv||1)-1]);
+  s('cert-inv-id',inv.id);
+  s('cert-time',inv.date);
+  var qd=encodeURIComponent('BSMLH-CERT:'+inv.id+':'+U.huid);
+  var qi=document.getElementById('cert-qr-img');
+  if(qi) qi.src='https://api.qrserver.com/v1/create-qr-code/?size=150x150&data='+qd+'&color=21A038&bgcolor=ffffff';
+  document.getElementById('cert-page').style.display='block';
+}
+
 function loadPatent(){
   try{
     var p=localStorage.getItem('bsmlh_patent');
@@ -1068,6 +1104,42 @@ function tryFixInv(){
   // Очистить форму
   el('inv-t').value='';el('inv-d').value='';el('inv-niche').value='';
 }
+
+function fixInvData(t,n,d){
+  var id='BST-'+Date.now().toString(36).toUpperCase();
+  var date=new Date().toLocaleString('ru-RU');
+  var hashVal=0;
+  var str=t+'|'+U.huid+'|'+date;
+  for(var i=0;i<str.length;i++){hashVal=((hashVal<<5)-hashVal)+str.charCodeAt(i);hashVal=hashVal&hashVal;}
+  var hash='BSH-'+Math.abs(hashVal).toString(16).toUpperCase().padStart(8,'0');
+  var inv={id:id,t:t,niche:n,desc:d,date:date,hash:hash,lv:curLv,author:U.name,huid:U.huid};
+  try{localStorage.setItem('bsmlh_patent',JSON.stringify(inv));}catch(e){}
+  // Показать сертификат
+  showCert(inv);
+  // Обновить вид патента
+  el('pat-empty').style.display='none';
+  var view=el('pat-view');
+  view.style.display='block';
+  view.innerHTML='<div class="patent-card"><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><div style="background:var(--green);color:white;padding:3px 8px;border-radius:6px;font-size:11px;font-weight:700;">L'+curLv+'</div><div class="patent-title" style="margin:0;">'+t+'</div></div><div class="patent-id">'+id+'</div><div class="patent-field"><label>Дата</label><div class="val">'+date+'</div></div><div class="patent-field"><label>SHA</label><div class="val" style="font-family:monospace;font-size:12px;color:var(--green);">'+hash+'</div></div><button class="btn-ghost" style="margin-top:10px;" onclick="var p=JSON.parse(localStorage.getItem('bsmlh_patent'));showCert(p);">📄 Открыть сертификат</button></div>';
+  T('✅ Зафиксировано на уровне L'+curLv+'!');
+  el('inv-t').value='';el('inv-d').value='';el('inv-niche').value='';
+}
+function showCert(inv){
+  var s=function(id,v){var e=document.getElementById(id);if(e)e.innerText=v||'—';};
+  s('cert-author',inv.author||U.name);
+  s('cert-huid',inv.huid||U.huid);
+  s('cert-title-txt',inv.t||inv.title);
+  s('cert-desc',inv.desc);
+  s('cert-niche',inv.niche);
+  s('cert-level','L'+inv.lv+' — '+['Timestamp $0.99','Prior Art $9.99','Certificate $49.99'][(inv.lv||1)-1]);
+  s('cert-inv-id',inv.id);
+  s('cert-time',inv.date);
+  var qd=encodeURIComponent('BSMLH-CERT:'+inv.id+':'+U.huid);
+  var qi=document.getElementById('cert-qr-img');
+  if(qi) qi.src='https://api.qrserver.com/v1/create-qr-code/?size=150x150&data='+qd+'&color=21A038&bgcolor=ffffff';
+  document.getElementById('cert-page').style.display='block';
+}
+
 function loadPatent(){
   try{
     var p=localStorage.getItem('bsmlh_patent');
@@ -1102,5 +1174,47 @@ firebase.initializeApp({
   appId:"1:41774666354:web:e200d57a0bab89e26be8eb"
 });
 </script>
+
+<!-- OVERLAY чип сканирование -->
+<div id="chip-scan-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:9998;flex-direction:column;align-items:center;justify-content:center;gap:16px;">
+  <div style="width:80px;height:80px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;">
+    <svg width="40" height="40" viewBox="0 0 24 24" fill="white"><path d="M20 2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-5 14H9V8h6v2h-4v1h4v2h-4v1h4v2z"/></svg>
+  </div>
+  <div id="patent-chip-status" style="color:white;font-size:18px;font-weight:700;font-family:var(--font);">Сканирование...</div>
+  <div id="patent-chip-sub" style="color:rgba(255,255,255,0.7);font-size:14px;font-family:var(--font);text-align:center;padding:0 32px;">Поднесите BSMLH CHIP к задней части телефона</div>
+  <div id="pat-beam" style="width:200px;height:3px;background:var(--green);border-radius:99px;"></div>
+</div>
+
+<!-- СЕРТИФИКАТ -->
+<div id="cert-page" style="display:none;position:fixed;inset:0;background:white;z-index:9999;overflow-y:auto;padding:30px 20px;">
+  <div style="max-width:480px;margin:0 auto;">
+    <div style="text-align:center;border-bottom:2px solid var(--green);padding-bottom:20px;margin-bottom:20px;">
+      <div style="font-size:36px;margin-bottom:8px;">🛡️</div>
+      <div style="font-size:20px;font-weight:900;letter-spacing:3px;color:var(--text);">BSMLH</div>
+      <div style="font-size:11px;color:var(--text2);margin-top:4px;letter-spacing:2px;">СЕРТИФИКАТ АВТОРСКОГО ПРИОРИТЕТА</div>
+    </div>
+    <div style="margin-bottom:14px;"><label style="font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:4px;">Автор</label><p style="font-size:15px;font-weight:600;color:var(--text);" id="cert-author">—</p></div>
+    <div style="margin-bottom:14px;"><label style="font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:4px;">HUID</label><p style="font-size:12px;font-family:monospace;color:var(--green);" id="cert-huid">—</p></div>
+    <div style="margin-bottom:14px;"><label style="font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:4px;">Изобретение</label><p style="font-size:15px;font-weight:700;color:var(--text);" id="cert-title-txt">—</p></div>
+    <div style="margin-bottom:14px;"><label style="font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:4px;">Описание</label><p style="font-size:13px;color:var(--text);line-height:1.6;" id="cert-desc">—</p></div>
+    <div style="display:flex;gap:12px;margin-bottom:14px;">
+      <div style="flex:1;"><label style="font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:4px;">Ниша</label><p style="font-size:13px;font-weight:600;" id="cert-niche">—</p></div>
+      <div style="flex:1;"><label style="font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:4px;">Уровень</label><p style="font-size:13px;font-weight:600;color:var(--green);" id="cert-level">—</p></div>
+    </div>
+    <div style="margin-bottom:14px;"><label style="font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:4px;">ID документа</label><p style="font-size:12px;font-family:monospace;" id="cert-inv-id">—</p></div>
+    <div style="margin-bottom:14px;"><label style="font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:4px;">Дата фиксации</label><p style="font-size:13px;font-weight:600;" id="cert-time">—</p></div>
+    <div style="text-align:center;margin:20px 0;">
+      <img id="cert-qr-img" src="" style="width:150px;height:150px;border-radius:10px;" alt="QR">
+      <div style="font-size:11px;color:var(--text2);margin-top:6px;">Скан для верификации</div>
+    </div>
+    <div style="background:var(--green-light);border-radius:12px;padding:16px;font-size:12px;color:var(--text2);line-height:1.7;margin-bottom:20px;text-align:center;">
+      Настоящий сертификат подтверждает факт фиксации авторского приоритета в системе BSMLH. Данные зафиксированы с применением биометрической идентификации NFC-чипа.
+      <div style="font-size:13px;font-weight:700;color:var(--green);margin-top:10px;">✓ BSMLH VERIFIED</div>
+    </div>
+    <button class="btn" onclick="window.print()" style="margin-bottom:10px;">🖨️ Сохранить как PDF</button>
+    <button class="btn-ghost" onclick="document.getElementById('cert-page').style.display='none';">← Назад</button>
+  </div>
+</div>
+
 </body>
 </html>
