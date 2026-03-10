@@ -6,14 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <title>BSMLH</title>
-<meta name="theme-color" content="#21A038">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-touch-fullscreen" content="yes">
-<link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700;900&display=swap" rel="stylesheet">
-
 
 <style>
 :root{
@@ -412,9 +406,6 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
     <div class="scr-step">Верификация</div>
     <div class="scr-h">Введите номер телефона</div>
     <div class="scr-p">Мы отправим код подтверждения на ваш номер</div>
-    <div style="background:#FFF8E1;border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:13px;color:#856404;line-height:1.5;">
-      ⚠️ SMS работает в тестовом режиме. Используйте номер который зарегистрирован в системе.
-    </div>
     <div class="phone-prefix">
       <span class="prefix-flag">🇰🇿</span>
       <span class="prefix-code">+7</span>
@@ -599,48 +590,15 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
     <span class="pg-head-title">Биржа труда</span>
   </div>
   <div class="pg-body">
-    <div style="display:flex;gap:8px;margin-bottom:16px;">
-      <button class="btn" style="flex:1;padding:10px;font-size:13px;" onclick="showJobTab('vacancies')">Вакансии</button>
-      <button class="btn-ghost" style="flex:1;padding:10px;font-size:13px;" onclick="showJobTab('post')">Разместить</button>
-    </div>
-    <div id="job-vacancies">
-      <div class="section-title">Открытые вакансии</div>
-      <div class="job-item" onclick="applyJob(this,'Frontend разработчик')">
-        <div class="job-company">TechKZ</div>
-        <div class="job-title">Frontend разработчик</div>
-        <div class="job-tags"><span class="job-tag">React</span><span class="job-tag">Remote</span><span class="job-tag">500K₸</span></div>
-        <button class="btn" style="margin-top:12px;padding:10px;font-size:13px;">Откликнуться</button>
-      </div>
-      <div class="job-item" onclick="">
-        <div class="job-company">BSMLH Hub</div>
-        <div class="job-title">NFC-специалист</div>
-        <div class="job-tags"><span class="job-tag">NFC</span><span class="job-tag">Алматы</span><span class="job-tag">400K₸</span></div>
-        <button class="btn" style="margin-top:12px;padding:10px;font-size:13px;" onclick="applyJob(this,'NFC-специалист')">Откликнуться</button>
-      </div>
-      <div class="job-item">
-        <div class="job-company">InvestKZ</div>
-        <div class="job-title">Финансовый аналитик</div>
-        <div class="job-tags"><span class="job-tag">Финансы</span><span class="job-tag">Hybrid</span><span class="job-tag">600K₸</span></div>
-        <button class="btn" style="margin-top:12px;padding:10px;font-size:13px;" onclick="applyJob(this,'Финансовый аналитик')">Откликнуться</button>
-      </div>
-      <div class="job-item">
-        <div class="job-company">StartupAlmaty</div>
-        <div class="job-title">Product Manager</div>
-        <div class="job-tags"><span class="job-tag">PM</span><span class="job-tag">Remote</span><span class="job-tag">700K₸</span></div>
-        <button class="btn" style="margin-top:12px;padding:10px;font-size:13px;" onclick="applyJob(this,'Product Manager')">Откликнуться</button>
-      </div>
-    </div>
-    <div id="job-post" style="display:none;">
-      <div class="section-title">Разместить вакансию</div>
-      <input class="inp" id="job-post-title" placeholder="Название вакансии">
-      <input class="inp" id="job-post-company" placeholder="Компания">
-      <input class="inp" id="job-post-salary" placeholder="Зарплата (напр. 500K₸)">
-      <textarea class="inp" id="job-post-desc" placeholder="Описание вакансии" rows="4" style="resize:none;"></textarea>
-      <button class="btn" onclick="postJob()">Опубликовать</button>
-    </div>
+    <div class="section-title">Вакансии</div>
+    <div class="job-item"><div class="job-company">TechKZ</div><div class="job-title">Frontend разработчик</div><div class="job-tags"><span class="job-tag">React</span><span class="job-tag">Remote</span><span class="job-tag">500K₸</span></div></div>
+    <div class="job-item"><div class="job-company">BSMLH Hub</div><div class="job-title">NFC-специалист</div><div class="job-tags"><span class="job-tag">NFC</span><span class="job-tag">Алматы</span><span class="job-tag">400K₸</span></div></div>
+    <div class="job-item"><div class="job-company">InvestKZ</div><div class="job-title">Финансовый аналитик</div><div class="job-tags"><span class="job-tag">Финансы</span><span class="job-tag">Hybrid</span><span class="job-tag">600K₸</span></div></div>
+    <div class="job-item"><div class="job-company">StartupAlmaty</div><div class="job-title">Product Manager</div><div class="job-tags"><span class="job-tag">PM</span><span class="job-tag">Remote</span><span class="job-tag">700K₸</span></div></div>
   </div>
 </div>
 
+<!-- Кошелёк -->
 <div id="pg-wal" class="pg">
   <div class="pg-head">
     <button class="pg-back" onclick="closePg('pg-wal')"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></button>
@@ -649,30 +607,19 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
   <div class="pg-body">
     <div class="wallet-card">
       <div class="wallet-balance-label">Баланс BSMLH Token</div>
-      <div><span class="wallet-balance" id="wal-balance">0.00</span><span class="wallet-currency"> BST</span></div>
-      <div style="font-size:11px;opacity:0.6;margin-top:4px;">≈ $0.00 USD · Токен запускается в 2026</div>
+      <div><span class="wallet-balance">0.00</span><span class="wallet-currency">BST</span></div>
       <div class="wallet-actions">
-        <button class="wallet-btn" onclick="T('Пополнение скоро будет доступно')">↑ Пополнить</button>
-        <button class="wallet-btn" onclick="T('Вывод скоро будет доступно')">↓ Вывести</button>
-        <button class="wallet-btn" onclick="T('Обмен скоро будет доступен')">⇄ Обмен</button>
+        <button class="wallet-btn">↑ Пополнить</button>
+        <button class="wallet-btn">↓ Вывести</button>
+        <button class="wallet-btn">⇄ Обмен</button>
       </div>
     </div>
-    <div class="card">
-      <div class="section-title">Мой адрес</div>
-      <div id="wal-addr" style="font-size:12px;color:var(--text2);word-break:break-all;padding:8px 0;">Генерируется после входа...</div>
-      <button class="btn-ghost" style="margin-top:8px;" onclick="copyAddr()">📋 Скопировать адрес</button>
-    </div>
-    <div class="section-title">История</div>
-    <div id="wal-history">
-      <div style="text-align:center;padding:24px;color:var(--text2);font-size:13px;">Транзакций пока нет</div>
-    </div>
-    <div class="card" style="margin-top:12px;background:var(--green-light);border:1.5px solid var(--green);">
-      <div style="font-size:13px;font-weight:700;color:var(--green);margin-bottom:4px;">🚀 BST Token</div>
-      <div style="font-size:12px;color:var(--text2);line-height:1.6;">BSMLH Security Token запускается в 2026. Все зарегистрированные пользователи получат начальный баланс автоматически.</div>
-    </div>
+    <div class="section-title">История транзакций</div>
+    <div style="text-align:center;padding:24px;color:var(--text2);font-size:13px;">Транзакций пока нет</div>
   </div>
 </div>
 
+<!-- Инвестиции -->
 <div id="pg-fund" class="pg">
   <div class="pg-head">
     <button class="pg-back" onclick="closePg('pg-fund')"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></button>
@@ -703,28 +650,17 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
     <div class="nfc-card">
       <div class="nfc-icon"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-5 14H9V8h6v2h-4v1h4v2h-4v1h4v2z"/></svg></div>
       <div class="nfc-label" id="chip-status-label">ЧИП НЕ АКТИВИРОВАН</div>
-      <div class="nfc-status" id="nst2">Поднесите чип к задней части телефона</div>
-      <div id="beam2" style="display:none;width:100%;height:3px;background:var(--green);border-radius:99px;animation:pulse 1s infinite;margin-top:8px;"></div>
+      <div class="nfc-status" id="nst2"></div>
     </div>
     <div id="chip-uid-block" style="display:none;" class="card">
       <div class="card-title">UID Чипа</div>
-      <div class="card-value" id="chip-uid-val" style="font-size:15px;word-break:break-all;font-family:monospace;"></div>
-      <button class="btn-ghost" style="margin-top:10px;" onclick="copyUID()">📋 Скопировать UID</button>
-    </div>
-    <div class="card" id="chip-info-block">
-      <div class="section-title">О чипе BSMLH</div>
-      <div style="font-size:14px;color:var(--text2);line-height:1.7;">
-        BSMLH Chip — физический NFC-чип стандарта <b>NTAG213</b>.<br><br>
-        После активации чип привязывается к вашему HUID и используется как физический ключ для входа в платформу и подписания документов.
-      </div>
+      <div class="card-value" id="chip-uid-val" style="font-size:16px;word-break:break-all;"></div>
     </div>
     <button class="btn" id="nbtn2" onclick="nfcActivate(2)">🛡️ Сканировать чип</button>
-    <div id="chip-active-actions" style="display:none;">
-      <button class="btn-ghost" onclick="T('Чип уже активирован')">✅ Активен</button>
-    </div>
   </div>
 </div>
 
+<!-- Настройки -->
 <div id="pg-set" class="pg">
   <div class="pg-head">
     <button class="pg-back" onclick="closePg('pg-set')"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></button>
@@ -764,7 +700,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
   </div>
 </div>
 
-
+<div id="recaptcha-container"></div>
 <div class="toast" id="toast"></div>
 
 <style>
@@ -781,39 +717,14 @@ function T(msg){
 }
 
 // SPLASH
-function function hideSplash(){
-  var s=document.getElementById('splash');
-  if(s) s.style.display='none';
-  // Грузить Firebase только после splash
-  loadFirebase(function(){console.log('Firebase ready');});
-}
-setTimeout(hideSplash, 1500);
-
-function loadFirebase(cb){
-  if(window.firebase){cb();return;}
-  var s1=document.createElement('script');
-  s1.src='https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js';
-  s1.onload=function(){
-    var s2=document.createElement('script');
-    s2.src='https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js';
-    s2.onload=function(){
-      if(!firebase.apps.length){
-        firebase.initializeApp({
-          apiKey:"AIzaSyBlD8lNdYdubHXr13IhPkmkCnNQQLChtVA",
-          authDomain:"bsmlh-chat.firebaseapp.com",
-          databaseURL:"https://bsmlh-chat-default-rtdb.firebaseio.com",
-          projectId:"bsmlh-chat",
-          storageBucket:"bsmlh-chat.firebasestorage.app",
-          messagingSenderId:"41774666354",
-          appId:"1:41774666354:web:e200d57a0bab89e26be8eb"
-        });
-      }
-      if(cb) cb();
-    };
-    document.head.appendChild(s2);
-  };
-  document.head.appendChild(s1);
-}
+(function(){
+  var fill=el('sp-fill');
+  if(fill) setTimeout(function(){fill.style.width='100%';},100);
+  setTimeout(function(){
+    var s=el('splash');
+    if(s) s.style.display='none';
+  },2500);
+})();
 
 // ── ПЕРЕХОДЫ ──
 function showScr(id){
@@ -847,28 +758,25 @@ function sendSMS(){
   var inp=el('sms-phone');
   var phone=inp?inp.value.trim():'';
   if(!phone){T('Введите номер телефона');return;}
-  if(!phone.startsWith('+')) phone='+7'+phone.replace(/[^0-9]/g,'');
+  if(!phone.startsWith('+')) phone='+7'+phone.replace(/\D/g,'');
   T('Отправляем код...');
-  if(window.recaptchaVerifier){
-    try{window.recaptchaVerifier.clear();}catch(e){}
-    window.recaptchaVerifier=null;
+  if(!window.recaptchaVerifier){
+    window.recaptchaVerifier=new firebase.auth.RecaptchaVerifier('recaptcha-container',{
+      size:'invisible',callback:function(){}
+    });
   }
-  var old=document.getElementById('rc-tmp');if(old)old.remove();
-  var rc=document.createElement('div');
-  rc.id='rc-tmp';rc.style.cssText='position:fixed;bottom:-200px;opacity:0;pointer-events:none;';
-  document.body.appendChild(rc);
-  window.recaptchaVerifier=new firebase.auth.RecaptchaVerifier('rc-tmp',{size:'invisible',callback:function(){}});
   firebase.auth().signInWithPhoneNumber(phone,window.recaptchaVerifier)
     .then(function(cr){
       window.confirmationResult=cr;
       el('ss1').style.display='none';
       el('ss2').style.display='block';
-      var hint=el('sms-hint');if(hint)hint.innerText='Код отправлен на '+phone;
-      T('Код отправлен');
+      var hint=el('sms-hint');
+      if(hint) hint.innerText='Код отправлен на '+phone;
+      T('✅ Код отправлен');
     })
     .catch(function(err){
       T('Ошибка: '+err.message);
-      if(window.recaptchaVerifier){try{window.recaptchaVerifier.clear();}catch(e){}window.recaptchaVerifier=null;}
+      if(window.recaptchaVerifier){window.recaptchaVerifier.clear();window.recaptchaVerifier=null;}
     });
 }
 
@@ -957,17 +865,11 @@ function toApp(){
     });
   }
   if(U.phone){var sp=el('set-phone');if(sp)sp.innerText=U.phone;}
-  // Wallet адрес
-  var chars2='0123456789abcdef',addr='0x';
-  for(var i=0;i<40;i++) addr+=chars2[Math.floor(Math.random()*chars2.length)];
-  U.walAddr=addr;
-  var wa=el('wal-addr');if(wa)wa.innerText=addr;
   refreshChipUI();
   // Скрыть онбординг, показать app
   document.querySelectorAll('.scr').forEach(function(s){s.style.display='none';});
   var app=el('app');if(app){app.style.display='flex';}
   loadFeed();
-  loadPatent();
   addMsg('bot','👋 Привет, '+U.name+'! Я ALAI — ваш ИИ-ассистент BSMLH. Чем могу помочь?');
 }
 
@@ -997,37 +899,13 @@ function savePat(){
   var niche=el('pat-niche').value.trim();
   var desc=el('pat-desc').value.trim();
   if(!title){T('Введите название изобретения');return;}
-  if(!desc){T('Введите описание изобретения');return;}
   var id='BST-'+Date.now().toString(36).toUpperCase();
   var date=new Date().toLocaleDateString('ru-RU');
-  // Хэш SHA-256 простой симуляция
-  var hash=simpleHash(title+'|'+U.huid+'|'+date);
-  var pat={id:id,title:title,niche:niche,desc:desc,date:date,hash:hash,author:U.name,huid:U.huid};
-  try{localStorage.setItem('bsmlh_patent',JSON.stringify(pat));}catch(e){}
   el('pat-form').style.display='none';
-  el('pat-empty').style.display='none';
-  renderPatent(pat);
-  T('✅ Патент зарегистрирован!');
-}
-function simpleHash(str){
-  var h=0;
-  for(var i=0;i<str.length;i++){h=((h<<5)-h)+str.charCodeAt(i);h=h&h;}
-  return 'BSH-'+(Math.abs(h)).toString(16).toUpperCase().padStart(8,'0');
-}
-function renderPatent(p){
   var view=el('pat-view');
   view.style.display='block';
-  view.innerHTML='<div class="patent-card"><div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;"><div style="width:36px;height:36px;background:var(--green);border-radius:8px;display:flex;align-items:center;justify-content:center;"><svg width=20 height=20 viewBox="0 0 24 24" fill=white><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11z"/></svg></div><div><div class="patent-title" style="margin-bottom:0;">'+p.title+'</div><div class="patent-id">'+p.id+'</div></div></div><div class="patent-field"><label>Автор</label><div class="val">'+p.author+'</div></div><div class="patent-field"><label>HUID</label><div class="val" style="font-size:12px;">'+p.huid+'</div></div><div class="patent-field"><label>Ниша</label><div class="val">'+(p.niche||'—')+'</div></div><div class="patent-field"><label>Описание</label><div class="val">'+p.desc+'</div></div><div class="patent-field"><label>Дата регистрации</label><div class="val">'+p.date+'</div></div><div class="patent-field"><label>Хэш SHA</label><div class="val" style="font-family:monospace;font-size:12px;">'+p.hash+'</div></div><button class="btn-ghost" style="margin-top:12px;" onclick="T('Сертификат — скоро')">📄 Скачать сертификат</button></div>';
-}
-function loadPatent(){
-  try{
-    var p=localStorage.getItem('bsmlh_patent');
-    if(p){
-      var pat=JSON.parse(p);
-      el('pat-empty').style.display='none';
-      renderPatent(pat);
-    }
-  }catch(e){}
+  view.innerHTML='<div class="patent-card"><div class="patent-title">'+title+'</div><div class="patent-id">'+id+'</div><div class="patent-field"><label>Автор</label><div class="val">'+U.name+'</div></div><div class="patent-field"><label>HUID</label><div class="val">'+U.huid+'</div></div><div class="patent-field"><label>Ниша</label><div class="val">'+(niche||'—')+'</div></div><div class="patent-field"><label>Описание</label><div class="val">'+desc+'</div></div><div class="patent-field"><label>Дата</label><div class="val">'+date+'</div></div></div>';
+  T('✅ Патент зарегистрирован');
 }
 
 // ── ФИИД ──
@@ -1062,48 +940,21 @@ function sendChat(){
   },600);
 }
 
-
-function applyJob(btn, title){
-  if(btn) btn.innerText='✅ Отклик отправлен';
-  if(btn) btn.disabled=true;
-  if(btn) btn.style.background='#6B7280';
-  T('Отклик на "'+title+'" отправлен!');
-}
-function showJobTab(tab){
-  var v=document.getElementById('job-vacancies');
-  var p=document.getElementById('job-post');
-  if(tab==='vacancies'){
-    if(v)v.style.display='block';
-    if(p)p.style.display='none';
-  } else {
-    if(v)v.style.display='none';
-    if(p)p.style.display='block';
-  }
-}
-function postJob(){
-  var t=document.getElementById('job-post-title');
-  var c=document.getElementById('job-post-company');
-  if(!t||!t.value.trim()){T('Введите название вакансии');return;}
-  T('✅ Вакансия опубликована!');
-  if(t)t.value='';
-  if(c)c.value='';
-  var d=document.getElementById('job-post-desc');if(d)d.value='';
-  var s=document.getElementById('job-post-salary');if(s)s.value='';
-  showJobTab('vacancies');
-}
-function copyAddr(){
-  var a=document.getElementById('wal-addr');
-  if(a&&navigator.clipboard) navigator.clipboard.writeText(a.innerText).then(function(){T('Адрес скопирован');});
-  else T('Адрес скопирован');
-}
-function copyUID(){
-  var u=document.getElementById('chip-uid-val');
-  if(u&&navigator.clipboard) navigator.clipboard.writeText(u.innerText).then(function(){T('UID скопирован');});
-  else T('UID скопирован');
-}
-
 // ── ЯЗЫК ──
 function toggleLang(){T('Смена языка — скоро');}
+</script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script>
+firebase.initializeApp({
+  apiKey:"AIzaSyBlD8lNdYdubHXr13IhPkmkCnNQQLChtVA",
+  authDomain:"bsmlh-chat.firebaseapp.com",
+  databaseURL:"https://bsmlh-chat-default-rtdb.firebaseio.com",
+  projectId:"bsmlh-chat",
+  storageBucket:"bsmlh-chat.firebasestorage.app",
+  messagingSenderId:"41774666354",
+  appId:"1:41774666354:web:e200d57a0bab89e26be8eb"
+});
 </script>
 </body>
 </html>
